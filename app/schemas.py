@@ -115,22 +115,28 @@ class AnswerResponse(BaseModel):
 
 class DetectionResult(BaseModel):
     """Result of URL content type detection."""
+    url: str = Field(..., description="Original URL that was detected")
     adapter_type: AdapterType = Field(..., description="Recommended adapter type")
     confidence: float = Field(..., ge=0.0, le=1.0, description="Confidence score")
     content_type: Optional[str] = Field(None, description="Detected content type")
     host: str = Field(..., description="Hostname of the URL")
     title: Optional[str] = Field(None, description="Page title if available")
     description: Optional[str] = Field(None, description="Page description if available")
+    detection_method: str = Field(..., description="Method used for detection")
     metadata: Dict[str, Any] = Field(default_factory=dict, description="Additional detection metadata")
 
 
 class PlanningResult(BaseModel):
     """Result of question analysis and capability planning."""
+    question: str = Field(..., description="Original question text")
+    normalized_question: str = Field(..., description="Normalized version of the question")
     required_capabilities: List[Capability] = Field(..., description="Capabilities needed to answer question")
     capability_scores: Dict[Capability, float] = Field(..., description="Importance scores for each capability")
+    capability_priority: List[Capability] = Field(..., description="Capabilities in priority order")
     keywords: List[str] = Field(default_factory=list, description="Extracted keywords from question")
     question_type: str = Field(..., description="Type of question (e.g., 'how_to', 'what_is', 'api_usage')")
     confidence: float = Field(..., ge=0.0, le=1.0, description="Confidence in capability analysis")
+    planning_method: str = Field(..., description="Method used for planning (e.g., 'keyword_analysis')")
 
 
 class NavigationResult(BaseModel):
